@@ -12,10 +12,6 @@ This project is a sample code for SharingWithUNET in Mixed Reality Toolkit - Uni
   * Select Open.
   * Navigate to where you extracted the project files.
   * Click Select Folder.
-* Import Mixed Reality Toolkit - Unity 2017.2.1.1
-  * Select [Assets]-[Import Package]-[Custom Package].
-  * Navigate to where you extracted the project files.
-  * Click Select Folder.
 * Check that Mixed Reality is enabled in Unity.
   * Select [Mixed Reality Toolkit]-[Configure]-[Apply Mixed Reality Project Settings]
   * Check that the following items are checked
