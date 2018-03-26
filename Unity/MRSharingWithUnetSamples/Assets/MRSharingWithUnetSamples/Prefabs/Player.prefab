@@ -55,7 +55,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SharesSpatialAnchors: 0
-  bullet: {fileID: 1000013437630216, guid: f59738f66a2923a44b1de68dd1887fd0, type: 2}
+  Bullet: {fileID: 1000013437630216, guid: f59738f66a2923a44b1de68dd1887fd0, type: 2}
   CanShareAnchors: 0
 --- !u!114 &114202254116753386
 MonoBehaviour:

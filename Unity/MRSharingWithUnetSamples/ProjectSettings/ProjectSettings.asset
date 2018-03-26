@@ -557,7 +557,7 @@ PlayerSettings:
   metroCertificatePassword: 
   metroCertificateSubject: DefaultCompany
   metroCertificateIssuer: DefaultCompany
-  metroCertificateNotAfter: 80a960d5d1ded401
+  metroCertificateNotAfter: 00c33de78fe3d401
   metroApplicationDescription: MRSharingWithUnetSamples
   wsaImages: {}
   metroTileShortName: 
@@ -576,8 +576,11 @@ PlayerSettings:
     WindowsStoreApps:
       HumanInterfaceDevice: False
       InternetClient: False
-      InternetClientServer: False
-      PrivateNetworkClientServer: False
+      InternetClientServer: True
+      Microphone: False
+      PrivateNetworkClientServer: True
+      SpatialPerception: False
+      WebCam: False
   metroFTAName: 
   metroFTAFileTypes: []
   metroProtocolName: 

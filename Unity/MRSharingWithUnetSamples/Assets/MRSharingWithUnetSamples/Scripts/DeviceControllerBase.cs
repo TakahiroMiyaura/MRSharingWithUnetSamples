@@ -14,6 +14,8 @@ namespace Assets.MRSharingWithUnetSamples.Scripts
 
         [HideInInspector] public GameObject PlayerInstance;
 
+        private GameObject _playerObject;
+
         private NetworkBehaviour _playerNetworkBehaviour;
 
         protected NetworkBehaviour GetPlayerNetworkBehaviour()
@@ -25,6 +27,12 @@ namespace Assets.MRSharingWithUnetSamples.Scripts
         {
             _playerNetworkBehaviour = behaviour;
         }
+
+        public void RemovePlayerObject()
+        {
+            if (_playerObject != null) DestroyImmediate(_playerObject);
+        }
+
 
         public abstract void LocalPlayerUpdate();
 
@@ -38,13 +46,13 @@ namespace Assets.MRSharingWithUnetSamples.Scripts
 
         protected void CreatePlayerObject(Color playerColor)
         {
-            var instantiate = Instantiate(PlayerObject);
-            instantiate.transform.position = Vector3.zero;
-            instantiate.transform.SetParent(PlayerInstance.transform);
-            instantiate.transform.localPosition = Vector3.zero;
+            _playerObject = Instantiate(PlayerObject);
+            _playerObject.transform.position = Vector3.zero;
+            _playerObject.transform.SetParent(PlayerInstance.transform);
+            _playerObject.transform.localPosition = Vector3.zero;
             var material = new Material(Shader.Find("Diffuse"));
             material.color = playerColor;
-            var componentInChildren = instantiate.GetComponent<MeshRenderer>();
+            var componentInChildren = _playerObject.GetComponent<MeshRenderer>();
             componentInChildren.material = material;
         }
     }

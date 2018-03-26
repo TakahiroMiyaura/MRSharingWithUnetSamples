@@ -99,7 +99,10 @@ namespace Assets.UNETTestSamples.Scripts
         {
             Debug.LogFormat("CurrentDisplayType changing from {0} to {1}", _currentDisplayType, update);
             _currentDisplayType = update;
+            _refreshDeviceController = true;
         }
+
+        private bool _refreshDeviceController = false;
 
 #pragma warning disable 0414
         /// <summary>
@@ -145,6 +148,7 @@ namespace Assets.UNETTestSamples.Scripts
 
         public bool CanShareAnchors;
         private DeviceControllerBase _deviceController;
+        private DeviceControllerBase[] _deviceControllerBases;
 
         #endregion
 
@@ -165,30 +169,9 @@ namespace Assets.UNETTestSamples.Scripts
                 return;
             }
 
-            var deviceControllerBases = GetComponents<DeviceControllerBase>();
-            if (deviceControllerBases.Length == 0)
-            {
-                Debug.LogError(
-                    "This script required one or more DeviceController(inheritate DeviceControllerBase) script attached to this GameObject.");
-                Destroy(this);
-                return;
-            }
+            _deviceControllerBases = GetComponents<DeviceControllerBase>();
 
-            foreach (var deviceControllerBase in deviceControllerBases)
-                if (isLocalPlayer && MixedRealityCameraManager.Instance.CurrentDisplayType ==
-                    deviceControllerBase.SupportDisplayType
-                    || !isLocalPlayer && _currentDisplayType == deviceControllerBase.SupportDisplayType)
-                {
-                    _deviceController = deviceControllerBase;
-                    deviceControllerBase.enabled = true;
-                }
-                else
-                {
-                    deviceControllerBase.enabled = false;
-                }
-
-            _deviceController.SetNetworkBehaviour(this);
-            _deviceController.PlayerInstance = gameObject;
+            SetDeviceController();
 
             if (isLocalPlayer)
             {
@@ -203,15 +186,56 @@ namespace Assets.UNETTestSamples.Scripts
                 Debug.Log("remote player");
                 InitializeRemotePlayer();
             }
-
-            _deviceController.PlayerInstance = gameObject;
-
+            
             _sharedWorldAnchorTransform = SharedCollection.Instance.gameObject.transform;
             transform.SetParent(_sharedWorldAnchorTransform);
         }
 
+        private void SetDeviceController()
+        {
+            if (_deviceControllerBases.Length == 0)
+            {
+                Debug.LogError(
+                    "This script required one or more DeviceController(inheritate DeviceControllerBase) script attached to this GameObject.");
+                Destroy(this);
+                return;
+            }
+
+            foreach (var controller in _deviceControllerBases)
+                if (isLocalPlayer && MixedRealityCameraManager.Instance.CurrentDisplayType ==
+                    controller.SupportDisplayType
+                    || !isLocalPlayer && _currentDisplayType == controller.SupportDisplayType)
+                {
+                    _deviceController = controller;
+                    controller.enabled = true;
+                }
+                else
+                {
+                    controller.enabled = false;
+                    controller.RemovePlayerObject();
+                }
+
+            _deviceController.SetNetworkBehaviour(this);
+            _deviceController.PlayerInstance = gameObject;
+
+            if (isLocalPlayer)
+            {
+                _deviceController.InitializeLocalPlayer();
+            }
+            else
+            {
+                _deviceController.InitializeRemotePlayer();
+            }
+        }
+
         private void Update()
         {
+            if (_refreshDeviceController)
+            {
+                SetDeviceController();
+                _refreshDeviceController = false;
+            }
+
             // If we aren't the local player, we just need to make sure that the position of this object is set properly
             // so that we properly render their avatar in our world.
             if (!isLocalPlayer && string.IsNullOrEmpty(_playerName) == false)
@@ -230,7 +254,7 @@ namespace Assets.UNETTestSamples.Scripts
             // if our anchor isn't established, we shouldn't bother sending transforms.
             if (_anchorEstablished == false)
             {
-                // return;
+                //return;
             }
 
             _deviceController.LocalPlayerUpdate();
@@ -370,14 +394,11 @@ namespace Assets.UNETTestSamples.Scripts
 #endif
                 Debug.LogFormat("local player {0} share anchors ", CanShareAnchors ? "does not" : "does");
                 CmdSetCanShareAnchors(CanShareAnchors);
-
-                _deviceController.InitializeLocalPlayer();
-            }
+             }
         }
 
         private void InitializeRemotePlayer()
         {
-            _deviceController.InitializeRemotePlayer();
             AnchorEstablishedChanged(_anchorEstablished);
             SharesAnchorsChanged(SharesSpatialAnchors);
         }
