@@ -25,12 +25,7 @@ namespace Assets.MRSharingWithUnetSamples.Scripts
             transform.position = CameraCache.Main.transform.position;
             transform.rotation = CameraCache.Main.transform.rotation;
         }
-
-        public override void OnStartLocalPlayer()
-        {
-            PlayerInstance.GetComponentInChildren<MeshRenderer>().material.color = Color.blue;
-        }
-
+        
         public override void InitializeLocalPlayer()
         {
             CreatePlayerObject(Color.blue);

@@ -70,7 +70,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerObject: {fileID: 1657478801132020, guid: 1a57a3894c0c2ab4cb82fa111da101b6,
     type: 2}
-  PlayerInstance: {fileID: 0}
 --- !u!114 &114268602507821614
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -84,7 +83,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerObject: {fileID: 1573699636619648, guid: bd875d6ee7546f94194a5d074343c5dd,
     type: 2}
-  PlayerInstance: {fileID: 0}
 --- !u!114 &114612417089077290
 MonoBehaviour:
   m_ObjectHideFlags: 1

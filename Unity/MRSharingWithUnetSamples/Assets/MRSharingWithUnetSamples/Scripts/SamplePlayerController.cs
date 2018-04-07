@@ -148,7 +148,6 @@ namespace Assets.UNETTestSamples.Scripts
 
         public bool CanShareAnchors;
         private DeviceControllerBase _deviceController;
-        private DeviceControllerBase[] _deviceControllerBases;
 
         #endregion
 
@@ -168,8 +167,6 @@ namespace Assets.UNETTestSamples.Scripts
                 Destroy(this);
                 return;
             }
-
-            _deviceControllerBases = GetComponents<DeviceControllerBase>();
 
             SetDeviceController();
 
@@ -193,7 +190,10 @@ namespace Assets.UNETTestSamples.Scripts
 
         private void SetDeviceController()
         {
-            if (_deviceControllerBases.Length == 0)
+
+            var deviceControllerBases = GetComponents<DeviceControllerBase>();
+
+            if (deviceControllerBases.Length == 0)
             {
                 Debug.LogError(
                     "This script required one or more DeviceController(inheritate DeviceControllerBase) script attached to this GameObject.");
@@ -201,11 +201,14 @@ namespace Assets.UNETTestSamples.Scripts
                 return;
             }
 
-            foreach (var controller in _deviceControllerBases)
+            bool isInitialized = false;
+            foreach (var controller in deviceControllerBases)
                 if (isLocalPlayer && MixedRealityCameraManager.Instance.CurrentDisplayType ==
                     controller.SupportDisplayType
                     || !isLocalPlayer && _currentDisplayType == controller.SupportDisplayType)
                 {
+                    if (controller.enabled)
+                        isInitialized = true;
                     _deviceController = controller;
                     controller.enabled = true;
                 }
@@ -216,11 +219,13 @@ namespace Assets.UNETTestSamples.Scripts
                 }
 
             _deviceController.SetNetworkBehaviour(this);
-            _deviceController.PlayerInstance = gameObject;
 
             if (isLocalPlayer)
             {
-                _deviceController.InitializeLocalPlayer();
+                if (!isInitialized)
+                {
+                    _deviceController.InitializeLocalPlayer();
+                }
             }
             else
             {
@@ -254,7 +259,7 @@ namespace Assets.UNETTestSamples.Scripts
             // if our anchor isn't established, we shouldn't bother sending transforms.
             if (_anchorEstablished == false)
             {
-                //return;
+                return;
             }
 
             _deviceController.LocalPlayerUpdate();
@@ -415,7 +420,6 @@ namespace Assets.UNETTestSamples.Scripts
         }
 
         #endregion
-
-#pragma warning restore 0414
+        
     }
 }
